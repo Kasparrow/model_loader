@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="headers">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="headers\render">
+      <UniqueIdentifier>{0aab2a24-2d9c-4676-a217-b6cb562fbbae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="headers\render\lights">
+      <UniqueIdentifier>{aee9f31a-eac3-406f-b966-01f7b73da1e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\utils">
+      <UniqueIdentifier>{7c1a43bb-16de-40b6-9ea1-251879ae22ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\utils">
+      <UniqueIdentifier>{aa47f83f-e8aa-4c7b-9b4b-6f95bb7bd249}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\models">
+      <UniqueIdentifier>{dd0540c3-4b00-4fe8-a8d6-9831a061cb06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\shaders">
+      <UniqueIdentifier>{b5659fae-cd4b-424e-811d-9ed86c9b981c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\3rd_parties">
+      <UniqueIdentifier>{616ebbf5-73b2-4c2a-998c-5de2052baeee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\3rd_parties\glad">
+      <UniqueIdentifier>{a885f82e-c450-4452-955c-fe5ce14cf0a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\3rd_parties\imgui">
+      <UniqueIdentifier>{12eb7cd0-8c68-4cc9-b6c6-4fae51c011c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\render">
+      <UniqueIdentifier>{a28bee1b-1347-4c54-975b-0fd13c32b530}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\render\lights">
+      <UniqueIdentifier>{1de3cae3-82b3-4ba2-b3b0-b07669b1ece7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\3rd_parties">
+      <UniqueIdentifier>{ded7b334-4149-491a-939f-b06a074678cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\3rd_parties\imgui">
+      <UniqueIdentifier>{ecabad5e-465e-4fb9-8e5e-cd9d079e3199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\render\model">
+      <UniqueIdentifier>{33993f7d-c613-4a10-ba4a-3ba4091b1811}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\render\model">
+      <UniqueIdentifier>{cc302b72-32fb-4725-86dd-e7422201b3ae}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Light.h">
+      <Filter>headers\render\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>headers\render\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>headers\render\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>headers\render\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>headers\render\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>headers\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.h">
+      <Filter>headers\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>headers\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd_parties\include\imgui\imconfig.h">
+      <Filter>headers\3rd_parties\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd_parties\include\imgui\imgui.h">
+      <Filter>headers\3rd_parties\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd_parties\include\imgui\imgui_impl_glfw.h">
+      <Filter>headers\3rd_parties\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd_parties\include\imgui\imgui_impl_opengl3.h">
+      <Filter>headers\3rd_parties\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd_parties\include\imgui\imgui_internal.h">
+      <Filter>headers\3rd_parties\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd_parties\include\imgui\imstb_rectpack.h">
+      <Filter>headers\3rd_parties\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd_parties\include\imgui\imstb_textedit.h">
+      <Filter>headers\3rd_parties\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd_parties\include\imgui\imstb_truetype.h">
+      <Filter>headers\3rd_parties\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>headers\render\model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>headers\render\model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>sources\render\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>sources\render\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>sources\render\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>sources\render\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>sources\render\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>sources\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>sources\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderProgram.cpp">
+      <Filter>sources\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_parties\src\glad\glad.c">
+      <Filter>sources\3rd_parties\glad</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_parties\src\imgui\imgui.cpp">
+      <Filter>sources\3rd_parties\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_parties\src\imgui\imgui_demo.cpp">
+      <Filter>sources\3rd_parties\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_parties\src\imgui\imgui_draw.cpp">
+      <Filter>sources\3rd_parties\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_parties\src\imgui\imgui_impl_glfw.cpp">
+      <Filter>sources\3rd_parties\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_parties\src\imgui\imgui_impl_opengl3.cpp">
+      <Filter>sources\3rd_parties\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd_parties\src\imgui\imgui_widgets.cpp">
+      <Filter>sources\3rd_parties\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>sources\render\model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>sources\render\model</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="object.vert">
+      <Filter>resources\shaders</Filter>
+    </None>
+    <None Include="object.frag">
+      <Filter>resources\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\resources\models\nanosuit\nanosuit.obj">
+      <Filter>resources\models</Filter>
+    </Object>
+  </ItemGroup>
+</Project>
