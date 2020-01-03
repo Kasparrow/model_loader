@@ -3,42 +3,46 @@
 #include <iostream>
 
 #include "Window.h"
+#include "ShaderManager.h"
 #include "LightManager.h"
 #include "Model.h"
 
-bool initialize()
+void initialize()
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    return true;
 }
 
 int main(int argc, char** argv)
 {
-    if (!initialize())
-        return EXIT_FAILURE;
+    initialize();
+    
+    bool is_wire_mode = false;
 
     Window window("Model loader", 1200, 800);
+    window.initialize();
     
-    if (!window.initialize())
-        return EXIT_FAILURE;
-
-    bool is_wire_mode = false;
+    ShaderManager shader_manager;
+    shader_manager.initialize();
+    
     LightManager light_manager;
-    Camera& camera = window.get_camera();
     light_manager.add_directional(glm::vec3(0.0f, -1.0f, 0.0f));
 
+    //Model nanosuit("..\\resources\\wow_models\\kasparrow\\kasparrow.obj");
     Model nanosuit("..\\resources\\models\\nanosuit\\nanosuit.obj");
+    Camera& camera = window.get_camera();
 
     glViewport(0, 0, window.get_width(), window.get_height());
 
-    ShaderProgram shader("object.vert", "object.frag");
-
     glm::mat4 model(1.0f);
-    model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+    model = glm::scale(model, nanosuit.get_local_scale());
+    model = glm::translate(model, nanosuit.get_local_position());
+    model = glm::rotate(model, nanosuit.get_local_rotation().x, glm::vec3(1.0, 0.0, 0.0));
+    model = glm::rotate(model, nanosuit.get_local_rotation().y, glm::vec3(0.0, 1.0, 0.0));
+    model = glm::rotate(model, nanosuit.get_local_rotation().z, glm::vec3(0.0, 0.0, 1.0));
+
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window.get_width() / (float)window.get_height(), 0.1f, 100.0f);
 
     glEnable(GL_DEPTH_TEST);
@@ -58,10 +62,11 @@ int main(int argc, char** argv)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // - set shader
+        ShaderProgram& shader = shader_manager.get_current_shader();
         shader.use();
         shader.set_mat4("model", model);
         shader.set_mat4("projection", projection);
-        shader.set_mat4("view", window.get_camera().get_view_matrix());
+        shader.set_mat4("view", camera.get_view_matrix());
         shader.set_vec3("view_position", camera.get_position());
         light_manager.set_uniforms(shader);
 
@@ -84,15 +89,16 @@ int main(int argc, char** argv)
         ImGui::Checkbox("Wiremode", &is_wire_mode);
         ImGui::End();
 
+        ImGui::Begin("Shader");
+        shader_manager.render();
+        ImGui::End();
+
         ImGui::Begin("Light Manager");
         light_manager.render_ui();
         ImGui::End();
 
-        ImGui::ShowExampleMenuFile();
-
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 
         window.swap_buffers();
         glfwPollEvents();

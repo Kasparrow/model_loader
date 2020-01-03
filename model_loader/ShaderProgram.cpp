@@ -1,9 +1,15 @@
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram(const GLchar* vertex_path, const GLchar* fragment_path)
+ShaderProgram::ShaderProgram(std::string name, std::string vertex_path, std::string fragment_path) :
+    _name(name), _vertex_path(vertex_path), _fragment_path(fragment_path), _id(0)
 {
-    std::string vertex_str;
-    std::string fragment_str;
+    compile();
+}
+
+void ShaderProgram::compile()
+{
+    std::string str_vertex_src;
+    std::string str_fragment_src;
     std::ifstream vertex_file;
     std::ifstream fragment_file;
 
@@ -13,8 +19,8 @@ ShaderProgram::ShaderProgram(const GLchar* vertex_path, const GLchar* fragment_p
 
     try
     {
-        vertex_file.open(vertex_path);
-        fragment_file.open(fragment_path);
+        vertex_file.open(_vertex_path);
+        fragment_file.open(_fragment_path);
 
         std::stringstream vertex_stream, fragment_stream;
         vertex_stream << vertex_file.rdbuf();
@@ -23,19 +29,18 @@ ShaderProgram::ShaderProgram(const GLchar* vertex_path, const GLchar* fragment_p
         vertex_file.close();
         fragment_file.close();
 
-        vertex_str = vertex_stream.str();
-        fragment_str = fragment_stream.str();
+        str_vertex_src = vertex_stream.str();
+        str_fragment_src = fragment_stream.str();
     }
     catch (std::ifstream::failure e)
     {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n";
     }
 
-    const char* vertex_src = vertex_str.c_str();
-    const char* fragment_src = fragment_str.c_str();
-
     // - compile shaders
 
+    const char* vertex_src = str_vertex_src.c_str();
+    const char* fragment_src = str_fragment_src.c_str();
     unsigned int vertex, fragment;
     int success;
     char log[512];
@@ -65,7 +70,13 @@ ShaderProgram::ShaderProgram(const GLchar* vertex_path, const GLchar* fragment_p
     }
 
     // - linking
-    _id = glCreateProgram();
+
+    // - delete old version
+
+    if (_id != 0)
+        glDeleteProgram(_id);
+
+    _id =  glCreateProgram();
     glAttachShader(_id, vertex);
     glAttachShader(_id, fragment);
     glLinkProgram(_id);
@@ -76,6 +87,9 @@ ShaderProgram::ShaderProgram(const GLchar* vertex_path, const GLchar* fragment_p
         glGetProgramInfoLog(_id, 512, nullptr, log);
         std::cout << "ERROR::SHADER_PROGRAM::LINKING::FAILED\n" << log << "\n";
     }
+
+    _last_vertex_write = std::filesystem::last_write_time(_vertex_path);
+    _last_fragment_write = std::filesystem::last_write_time(_fragment_path);
 
     // - delete shaders
     glDeleteShader(vertex);

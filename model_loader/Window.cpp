@@ -13,25 +13,23 @@ Window::~Window()
     // nothing to do, _window is delete with glfwTerminate at the end of the program
 }
 
-bool Window::initialize()
+void Window::initialize()
 {
     if (!initialize_glfw())
     {
         std::cout << "Failed to initialize GLFW.\n";
         glfwTerminate();
-        return false;
     }
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD.\n";
         glfwTerminate();
-        return false;
     }
 
     initialize_imgui();
 
-    return true;
+    assert(_window != nullptr);
 }
 
 bool Window::initialize_glfw()

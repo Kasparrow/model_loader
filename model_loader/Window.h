@@ -18,7 +18,7 @@ public:
     Window(std::string name = "Window", int width = 800, int height = 600);
     ~Window();
 
-    bool initialize();
+    void initialize();
     bool is_open();
     void process_inputs();
     void update_delta();

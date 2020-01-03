@@ -15,10 +15,17 @@ public:
     Model(std::string path);
     void render(ShaderProgram& shader);
 
+    inline glm::vec3& get_local_position() { return _local_position; };
+    inline glm::vec4& get_local_rotation() { return _local_rotation; };
+    inline glm::vec3& get_local_scale() { return _local_scale; };
+
 private:
     std::string _directory;
     std::vector<Mesh> _meshes;
     std::vector<Texture> _textures_loaded;
+    glm::vec3 _local_scale;
+    glm::vec4 _local_rotation;
+    glm::vec3 _local_position;
 
     void load_model(std::string path);
     void process_node(aiNode* node, const aiScene* scene);

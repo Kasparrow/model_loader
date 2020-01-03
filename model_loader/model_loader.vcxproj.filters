@@ -114,6 +114,12 @@
     <ClInclude Include="Model.h">
       <Filter>headers\render\model</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>headers\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>headers\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectionalLight.cpp">
@@ -170,14 +176,12 @@
     <ClCompile Include="Model.cpp">
       <Filter>sources\render\model</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="object.vert">
-      <Filter>resources\shaders</Filter>
-    </None>
-    <None Include="object.frag">
-      <Filter>resources\shaders</Filter>
-    </None>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>sources\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>sources\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Object Include="..\resources\models\nanosuit\nanosuit.obj">

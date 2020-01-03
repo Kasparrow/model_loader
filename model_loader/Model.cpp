@@ -24,6 +24,15 @@ void Model::load_model(std::string path)
 
     _directory = path.substr(0, path.find_last_of('\\'));
 
+    // extract local transformations
+
+    aiVector3D scaling, position;
+    aiQuaternion rotation;
+    scene->mRootNode->mTransformation.Decompose(scaling, rotation, position);
+    _local_scale = glm::vec3(scaling.x, scaling.y, scaling.z);
+    _local_rotation = glm::vec4(rotation.x, rotation.y, rotation.z, rotation.w);
+    _local_position = glm::vec3(position.x, position.y, position.z);
+
     process_node(scene->mRootNode, scene);
 }
 
@@ -50,6 +59,8 @@ Mesh Model::process_mesh(aiMesh* mesh, const aiScene* scene)
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex vertex;
+
+        // TODO : Inverted x and z coordinates on wow model => find a way to detect axis orientation
 
         vertex._position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
         vertex._normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
