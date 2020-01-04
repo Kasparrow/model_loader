@@ -1,4 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
 
 #include <iostream>
 
@@ -31,6 +33,7 @@ int main(int argc, char** argv)
     light_manager.add_directional(glm::vec3(0.0f, -1.0f, 0.0f));
 
     //Model nanosuit("..\\resources\\wow_models\\kasparrow\\kasparrow.obj");
+    //Model nanosuit("..\\resources\\wow_models\\alexstrasza\\alexstrasza.fbx");
     Model nanosuit("..\\resources\\models\\nanosuit\\nanosuit.obj");
     Camera& camera = window.get_camera();
 
@@ -47,6 +50,8 @@ int main(int argc, char** argv)
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window.get_width() / (float)window.get_height(), 0.1f, 100.0f);
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     while (window.is_open())
     {
@@ -77,9 +82,8 @@ int main(int argc, char** argv)
         // - render UI
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
+
         ImGui::NewFrame();
-
-
         ImGui::Begin("Debug");
         float fps_counter = 1.0F / window.get_delta();
         std::string fps = "FPS : " + std::to_string(fps_counter);

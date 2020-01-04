@@ -5,7 +5,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "stb_image/stb_image.h"
-
+#include "stb_image/stb_image_write.h"
 
 #include "Mesh.h"
 
@@ -31,8 +31,9 @@ private:
     void process_node(aiNode* node, const aiScene* scene);
     Mesh process_mesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> load_material_textures(const aiScene* scene,aiMaterial* mat, aiTextureType type, std::string type_name);
-    unsigned int texture_from_file(std::string filename, std::string directory);
-    unsigned int texture_from_data(const aiTexture* texture);
+    unsigned int load_texture_from_file(std::string filename, std::string directory);
+    unsigned int load_texture_from_data(const aiTexture* texture);
+    unsigned int load_texture(unsigned char* data, int width, int height, int nb_channels);
 };
 
 #endif

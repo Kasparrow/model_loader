@@ -2,7 +2,7 @@
 
 Based on [learnopengl.com](https://learnopengl.com) tutorial Model Loading.
 
-I only used .obj so far, but Assimp should handle other 3D model formats. The goal of this project is to provide a small environnement which allows me to play with the concepts I learned (lighting, shaders, etc) in the tutorial without recompiling the whole project each time I modify something.
+The goal of this project is to provide a small environnement which allows me to play with the concepts I learned (lighting, shaders, etc) in the tutorial without recompiling the whole project each time I modify something.
 
 ## controls
 
@@ -26,12 +26,17 @@ I only used .obj so far, but Assimp should handle other 3D model formats. The go
 
 ## screenshots
 
-I take the following screenshots with a model of my World of Warcraft character extracted from WoW Model Viewer. This model is not included in the repository (I'm not an expert with copyrights, but i suppose i don't own any rights on it), but you can test the program with the nanosuit model provided.
+I take the following screenshots with World of Warcraft models extracted with WoW Model Viewer. These models are not included in the repository (I'm not an expert in copyrights, but i'm pretty sure that i don't own any rights on them), but you can test the program with the nanosuit model provided.
 
-![default shader screenshot](./resources/screenshots/default.png)
-![lighting shader screenshot](./resources/screenshots/lighting.png)
+###### .obj with default shader
+![obj default shader screenshot](./resources/screenshots/default.png)
+###### .obj with lighting shader
+![obj lighting shader screenshot](./resources/screenshots/lighting.png)
+###### .fbx with default alpha shader
+![fbx default alpha shader screenshot](./resources/screenshots/alexstrasza_fbx.png)
 
 ## updates
 
+* 04/01/2020 : handle embedded texture in .fbx file
 * 03/01/2020 : add ShaderManager class
 * 17/12/2019 : initial commit

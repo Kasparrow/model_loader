@@ -104,7 +104,7 @@ std::vector<Texture> Model::load_material_textures(const aiScene* scene, aiMater
         aiString filename;
         material->GetTexture(type, i, &filename);
         bool skip = false;
-        
+
         for (unsigned int j = 0; j < _textures_loaded.size(); j++)
         {
             if (std::strcmp(_textures_loaded[j]._path.data(), filename.C_Str()) == 0)
@@ -125,90 +125,47 @@ std::vector<Texture> Model::load_material_textures(const aiScene* scene, aiMater
                 unsigned int index = std::stoi(std::string(&filename.data[1]));
                 aiTexture* embedded_texture = scene->mTextures[index];
 
-                texture._id = texture_from_data(embedded_texture);
-                texture._type = type_name;
-                texture._path = filename.data;
+                texture._id = load_texture_from_data(embedded_texture);
             }
 
+            // file texture
             else
             {
-                texture._id = texture_from_file(filename.C_Str(), _directory);
-                texture._type = type_name;
-                texture._path = filename.C_Str();
+                texture._id = load_texture_from_file(filename.C_Str(), _directory);
             }
             
+            texture._type = type_name;
+            texture._path = filename.C_Str();
             textures.push_back(texture);
             _textures_loaded.push_back(texture);
         }
-        
     }
 
     return textures;
 }
 
-unsigned int Model::texture_from_file(std::string filename, std::string directory)
+unsigned int Model::load_texture_from_file(std::string filename, std::string directory)
 {
-    unsigned int id;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
     int width, height, nb_channels;
     unsigned char* data = stbi_load((directory + '\\'+ filename).c_str(), &width, &height, &nb_channels, 0);
+    unsigned int id = 0;
 
     if (data)
-    {
-        std::string extension = "";
-        std::string::size_type index = filename.rfind(".");
-
-        if (index != std::string::npos)
-            extension = filename.substr(index + 1);
-
-        if (extension == "png")
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-        else if (extension == "jpg")
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-        else
-        {
-            std::cout << "Unknown extension : " << extension << "\n";
-            stbi_image_free(data);
-            return false;
-        }
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
+        id = load_texture(data, width, height, nb_channels);
 
     else
-    {
         std::cout << "Failed to load texture : " << directory << "\\" << filename << ".\n";
-        stbi_image_free(data);
-        return false;
-    }
 
     stbi_image_free(data);
 
     return id;
 }
 
-unsigned int Model::texture_from_data(const aiTexture* texture)
+unsigned int Model::load_texture_from_data(const aiTexture* texture)
 {
-    unsigned int id;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
     int width, height, nb_channels;
     unsigned char* data = nullptr;
+    unsigned int id = 0;
 
     if (texture->mHeight == 0)
         data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth, &width, &height, &nb_channels, 0);
@@ -217,24 +174,42 @@ unsigned int Model::texture_from_data(const aiTexture* texture)
         data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth * texture->mHeight, &width, &height, &nb_channels, 0);
 
     if (data)
-    {
-        if (nb_channels == 3)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        id = load_texture(data, width, height, nb_channels);
 
+    else
+        std::cout << "Failed to load embedded texture\n";
+
+    // extract embedded texture : sometimes WMV exported fbx contains embedded textures
+    // references and path to textures, but never provide these files.
+    // std::string file = std::to_string(id) + ".png";
+    // stbi_write_png(file.c_str(), width, height, STBI_rgb_alpha, data, 0);
+
+    stbi_image_free(data);
+
+    return id;
+}
+
+unsigned int Model::load_texture(unsigned char* data, int width, int height, int nb_channels)
+{
+    unsigned int id;
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    if (data)
+    {
         if (nb_channels == 4)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
+        else if (nb_channels == 3)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-
-    else
-    {
-        std::cout << "Failed to load embedded texture\n";
-        stbi_image_free(data);
-        return false;
-    }
-
-    stbi_image_free(data);
 
     return id;
 }
