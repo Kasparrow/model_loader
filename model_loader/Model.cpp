@@ -85,17 +85,17 @@ Mesh Model::process_mesh(aiMesh* mesh, const aiScene* scene)
     {
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-        std::vector<Texture> diffuse_maps = load_material_textures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        std::vector<Texture> diffuse_maps = load_material_textures(scene, material, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
 
-        std::vector<Texture> specular_maps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
+        std::vector<Texture> specular_maps = load_material_textures(scene, material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specular_maps.begin(), specular_maps.end());
     }
 
     return Mesh(vertices, indices, textures);
 }
 
-std::vector<Texture> Model::load_material_textures(aiMaterial* material, aiTextureType type, std::string type_name)
+std::vector<Texture> Model::load_material_textures(const aiScene* scene, aiMaterial* material, aiTextureType type, std::string type_name)
 {
     std::vector<Texture> textures;
 
@@ -118,9 +118,25 @@ std::vector<Texture> Model::load_material_textures(aiMaterial* material, aiTextu
         if (!skip)
         {
             Texture texture;
-            texture._id = texture_from_file(filename.C_Str(), _directory);
-            texture._type = type_name;
-            texture._path = filename.C_Str();
+
+            // embedded texture
+            if ('*' == filename.data[0])
+            {
+                unsigned int index = std::stoi(std::string(&filename.data[1]));
+                aiTexture* embedded_texture = scene->mTextures[index];
+
+                texture._id = texture_from_data(embedded_texture);
+                texture._type = type_name;
+                texture._path = filename.data;
+            }
+
+            else
+            {
+                texture._id = texture_from_file(filename.C_Str(), _directory);
+                texture._type = type_name;
+                texture._path = filename.C_Str();
+            }
+            
             textures.push_back(texture);
             _textures_loaded.push_back(texture);
         }
@@ -171,6 +187,49 @@ unsigned int Model::texture_from_file(std::string filename, std::string director
     else
     {
         std::cout << "Failed to load texture : " << directory << "\\" << filename << ".\n";
+        stbi_image_free(data);
+        return false;
+    }
+
+    stbi_image_free(data);
+
+    return id;
+}
+
+unsigned int Model::texture_from_data(const aiTexture* texture)
+{
+    unsigned int id;
+    glGenTextures(1, &id);
+    glBindTexture(GL_TEXTURE_2D, id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nb_channels;
+    unsigned char* data = nullptr;
+
+    if (texture->mHeight == 0)
+        data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth, &width, &height, &nb_channels, 0);
+
+    else
+        data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth * texture->mHeight, &width, &height, &nb_channels, 0);
+
+    if (data)
+    {
+        if (nb_channels == 3)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+        if (nb_channels == 4)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+    else
+    {
+        std::cout << "Failed to load embedded texture\n";
         stbi_image_free(data);
         return false;
     }

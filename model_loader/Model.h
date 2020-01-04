@@ -30,8 +30,9 @@ private:
     void load_model(std::string path);
     void process_node(aiNode* node, const aiScene* scene);
     Mesh process_mesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Texture> load_material_textures(aiMaterial* mat, aiTextureType type, std::string type_name);
+    std::vector<Texture> load_material_textures(const aiScene* scene,aiMaterial* mat, aiTextureType type, std::string type_name);
     unsigned int texture_from_file(std::string filename, std::string directory);
+    unsigned int texture_from_data(const aiTexture* texture);
 };
 
 #endif

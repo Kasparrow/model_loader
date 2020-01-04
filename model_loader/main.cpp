@@ -37,12 +37,13 @@ int main(int argc, char** argv)
     glViewport(0, 0, window.get_width(), window.get_height());
 
     glm::mat4 model(1.0f);
+
     model = glm::scale(model, nanosuit.get_local_scale());
     model = glm::translate(model, nanosuit.get_local_position());
     model = glm::rotate(model, nanosuit.get_local_rotation().x, glm::vec3(1.0, 0.0, 0.0));
     model = glm::rotate(model, nanosuit.get_local_rotation().y, glm::vec3(0.0, 1.0, 0.0));
     model = glm::rotate(model, nanosuit.get_local_rotation().z, glm::vec3(0.0, 0.0, 1.0));
-
+    
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)window.get_width() / (float)window.get_height(), 0.1f, 100.0f);
 
     glEnable(GL_DEPTH_TEST);
