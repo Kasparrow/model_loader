@@ -14,4 +14,5 @@ void main ()
 
     if (FragColor.a < 0.1f)
         discard;
+        
 }

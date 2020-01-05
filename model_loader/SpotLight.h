@@ -20,7 +20,7 @@ public:
 
     void render_ui(unsigned int id);
 
-    virtual void set_uniforms(ShaderProgram& shader);
+    virtual void set_uniforms(ShaderProgram& shader) const;
     virtual void set_name(unsigned int id);
     
     inline void set_position(glm::vec3 position) { _position = position;  }

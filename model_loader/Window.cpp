@@ -1,10 +1,10 @@
 #include "Window.h"
 
 Window::Window(std::string name, int width, int height)
-    : _name(name), _width(width), _height(height), _delta(0), _last_frame(0),
-    _camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f)),
-    _last_x(width / 2), _last_y(height / 2), _mouse_init(true), _was_cursor_locked(false),
-    _is_cursor_locked(true), _window(nullptr)
+    : _name{ name }, _width{ width }, _height{ height }, _delta{ 0 }, _last_frame{ 0 },
+    _camera{ glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f) },
+    _cursor_info{ width / 2.0f, height / 2.0f, true, false, true }, _gl_parameters{ false, true, true },
+    _window{ nullptr }
 {
 }
 
@@ -28,6 +28,8 @@ void Window::initialize()
     }
 
     initialize_imgui();
+
+    glViewport(0, 0, _width, _height);
 
     assert(_window != nullptr);
 }
@@ -59,7 +61,7 @@ bool Window::initialize_glfw()
 
     auto resize_callback = [](GLFWwindow* window, int width, int height)
     {
-        static_cast<Window*>(glfwGetWindowUserPointer(window))->on_mouse(window, width, height);
+        static_cast<Window*>(glfwGetWindowUserPointer(window))->on_resize(window, width, height);
     };
 
     glfwSetFramebufferSizeCallback(_window, resize_callback);
@@ -78,16 +80,11 @@ void Window::initialize_imgui()
     ImGui_ImplOpenGL3_Init("#version 330");
 }
 
-bool Window::is_open()
-{
-    return !glfwWindowShouldClose(_window);
-}
-
 void Window::process_inputs()
 {
     float delta = get_delta();
     
-    _was_cursor_locked = _is_cursor_locked;
+    _cursor_info._was_locked = _cursor_info._is_locked;
        
     if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
         _camera.process_keyboard(FORWARD, delta);
@@ -104,12 +101,12 @@ void Window::process_inputs()
     if (glfwGetKey(_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
         glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        _is_cursor_locked = false;
+        _cursor_info._is_locked = false;
     }
     else
     {
         glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        _is_cursor_locked = true;
+        _cursor_info._is_locked = true;
     }
 }
 
@@ -121,43 +118,67 @@ void Window::update_delta()
     _last_frame = current_frame;
 }
 
-float Window::get_delta()
+void Window::apply_gl_parameters() const
 {
-    return _delta;
+    if (_gl_parameters._is_wire_mode)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    if (_gl_parameters._use_depth)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH);
+
+    if (_gl_parameters._use_blend)
+        glEnable(GL_BLEND);
+    else
+        glDisable(GL_DEPTH);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Window::on_resize(GLFWwindow* window, int width, int height)
 {
+    _width = width;
+    _height = height;
     glViewport(0, 0, width, height);
 }
 
 void Window::on_mouse(GLFWwindow* window, double x_pos, double y_pos)
 {
     // - reinit cursor on unlock
-    if (!_was_cursor_locked || _mouse_init)
+    if (!_cursor_info._was_locked || _cursor_info._init)
     {
-        _last_x = x_pos;
-        _last_y = y_pos;
-        _mouse_init = false;
+        _cursor_info._last_x = x_pos;
+        _cursor_info._last_y = y_pos;
+        _cursor_info._init = false;
     }
 
-    float x_offset = x_pos - _last_x;
-    float y_offset = _last_y - y_pos;
-    _last_x = x_pos;
-    _last_y = y_pos;
+    float x_offset = x_pos - _cursor_info._last_x;
+    float y_offset = _cursor_info._last_y - y_pos;
+    _cursor_info._last_x = x_pos;
+    _cursor_info._last_y = y_pos;
 
-    if (!_is_cursor_locked)
+    if (!_cursor_info._is_locked)
         return;
 
     _camera.process_mouse(x_offset, y_offset);
 }
 
-void Window::swap_buffers()
+void Window::render_ui()
 {
-    glfwSwapBuffers(_window);
-}
+    std::string fps = "FPS : " + std::to_string(1.0f / get_delta());
+    std::string camera_position = "Camera position : " + str_utils::vec3_to_string(_camera.get_position());
+    std::string camera_orientation = "Camera orientation : " + str_utils::vec3_to_string(_camera.get_front());
 
-void Window::close()
-{
-    glfwSetWindowShouldClose(_window, true);
+    ImGui::NewFrame();
+    ImGui::Begin("Debug");
+    ImGui::Text(fps.c_str());
+    ImGui::Text(camera_position.c_str());
+    ImGui::Text(camera_orientation.c_str());
+    ImGui::Checkbox("Wiremode", &_gl_parameters._is_wire_mode); ImGui::SameLine();
+    ImGui::Checkbox("Enable GL_DEPTH", &_gl_parameters._use_depth); ImGui::SameLine();
+    ImGui::Checkbox("Enable GL_BLEND", &_gl_parameters._use_blend);
+    ImGui::End();
 }

@@ -12,12 +12,13 @@
 class Model
 {
 public:
-    Model(std::string path);
-    void render(ShaderProgram& shader);
+    Model(const std::string& path);
+    void render(ShaderProgram& shader) const;
+    glm::mat4 get_transformation_matrix() const;
 
-    inline glm::vec3& get_local_position() { return _local_position; };
-    inline glm::vec4& get_local_rotation() { return _local_rotation; };
-    inline glm::vec3& get_local_scale() { return _local_scale; };
+    inline const glm::vec3& get_local_position() { return _local_position; };
+    inline const glm::vec4& get_local_rotation() { return _local_rotation; };
+    inline const glm::vec3& get_local_scale() { return _local_scale; };
 
 private:
     std::string _directory;
@@ -27,13 +28,13 @@ private:
     glm::vec4 _local_rotation;
     glm::vec3 _local_position;
 
-    void load_model(std::string path);
+    void load_model(const std::string& path);
     void process_node(aiNode* node, const aiScene* scene);
     Mesh process_mesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> load_material_textures(const aiScene* scene,aiMaterial* mat, aiTextureType type, std::string type_name);
     unsigned int load_texture_from_file(std::string filename, std::string directory);
     unsigned int load_texture_from_data(const aiTexture* texture);
-    unsigned int load_texture(unsigned char* data, int width, int height, int nb_channels);
+    unsigned int load_texture(unsigned char* data, int width, int height, int nb_channels) const;
 };
 
 #endif

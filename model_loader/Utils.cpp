@@ -24,4 +24,9 @@ namespace str_utils
 
         return filename.substr(index + 1);
     }
+
+    std::string vec3_to_string(glm::vec3 vec3)
+    {
+        return "(" + std::to_string(vec3.x) + ", " + std::to_string(vec3.y) + ", " + std::to_string(vec3.z) + ")";
+    }
 }

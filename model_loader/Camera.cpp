@@ -26,7 +26,7 @@ Camera::Camera(float cam_x, float cam_y, float cam_z, float up_x, float up_y, fl
     update_camera_vectors();
 }
 
-glm::mat4 Camera::get_view_matrix()
+glm::mat4 Camera::get_view_matrix() const
 {
     return glm::lookAt(_position, _position + _front, _up);
 }

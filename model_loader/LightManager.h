@@ -12,9 +12,9 @@
 class LightManager
 {
 public:
-    LightManager() : _directional_count(0), _point_count(0), _spot_count(0), _directional_lights(),
-        _point_lights(), _spot_lights() {}
+    LightManager();
 
+    void set_uniforms(ShaderProgram& shader) const;
     void render_ui();
     
     void add_directional(glm::vec3 position, glm::vec3 ambient = DIRECTIONAL_AMBIENT,  
@@ -31,20 +31,15 @@ public:
     void remove_point(unsigned int id);
     void remove_spot(unsigned int id);
 
-    inline std::vector<DirectionalLight>& get_directional_lights() { return _directional_lights; }
-    inline std::vector<PointLight>& get_point_lights() { return _point_lights; }
-    inline std::vector<SpotLight>& get_spot_lights() { return _spot_lights; }
-
-    inline DirectionalLight& get_directional_light(unsigned int id) { return _directional_lights[id]; }
-    inline PointLight& get_point_light(unsigned int id) { return _point_lights[id]; }
-    inline SpotLight& get_spot_light(unsigned int id) { return _spot_lights[id]; }
-
-    inline int get_directional_count() { return _directional_count; }
-    inline int get_point_count() { return _point_count; }
-    inline int get_spot_count() { return _spot_count; }
-
-    void set_uniforms(ShaderProgram& shader);
-    void render_dummies(ShaderProgram& shader, unsigned int vao);
+    inline const std::vector<DirectionalLight>& get_directional_lights() const { return _directional_lights; }
+    inline const std::vector<PointLight>& get_point_lights() const { return _point_lights; }
+    inline const std::vector<SpotLight>& get_spot_lights() const { return _spot_lights; }
+    inline const DirectionalLight& get_directional_light(unsigned int id) const { return _directional_lights[id]; }
+    inline const PointLight& get_point_light(unsigned int id) const { return _point_lights[id]; }
+    inline const SpotLight& get_spot_light(unsigned int id) const { return _spot_lights[id]; }
+    inline int get_directional_count() const { return _directional_count; }
+    inline int get_point_count() const { return _point_count; }
+    inline int get_spot_count() const { return _spot_count; }
 
 private:
     unsigned int _directional_count;
@@ -54,7 +49,6 @@ private:
     std::vector<DirectionalLight> _directional_lights;
     std::vector<PointLight> _point_lights;
     std::vector<SpotLight> _spot_lights;
-
 };
 
 #endif

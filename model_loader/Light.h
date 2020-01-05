@@ -12,8 +12,7 @@
 class Light
 {
 public:
-    Light(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) :
-        _ambient(ambient), _diffuse(diffuse), _specular(specular) {}
+    Light(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 
     inline const glm::vec3& get_ambient() const { return _ambient; }
     inline const glm::vec3& get_diffuse() const { return _diffuse; }
@@ -23,7 +22,7 @@ public:
     inline void set_diffuse(glm::vec3 diffuse) { _diffuse = diffuse; }
     inline void set_specular(glm::vec3 specular) { _specular = specular; }
 
-    virtual void set_uniforms(ShaderProgram& shader);
+    virtual void set_uniforms(ShaderProgram& shader) const;
     virtual void set_name(unsigned int id) = 0;
 
 protected:

@@ -27,7 +27,7 @@ class Mesh
 {
 public:
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> _indices, std::vector<Texture> textures);
-    void render(ShaderProgram& shader);
+    void render(ShaderProgram& shader) const;
 
 private:
 

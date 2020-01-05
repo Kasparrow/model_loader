@@ -25,12 +25,6 @@
     <Filter Include="sources\utils">
       <UniqueIdentifier>{aa47f83f-e8aa-4c7b-9b4b-6f95bb7bd249}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources\models">
-      <UniqueIdentifier>{dd0540c3-4b00-4fe8-a8d6-9831a061cb06}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources\shaders">
-      <UniqueIdentifier>{b5659fae-cd4b-424e-811d-9ed86c9b981c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="sources\3rd_parties">
       <UniqueIdentifier>{616ebbf5-73b2-4c2a-998c-5de2052baeee}</UniqueIdentifier>
     </Filter>
@@ -182,10 +176,5 @@
     <ClCompile Include="Utils.cpp">
       <Filter>sources\utils</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="..\resources\models\nanosuit\nanosuit.obj">
-      <Filter>resources\models</Filter>
-    </Object>
   </ItemGroup>
 </Project>

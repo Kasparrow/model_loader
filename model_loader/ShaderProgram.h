@@ -27,12 +27,12 @@ public:
     void set_vec3(const std::string& name, glm::vec3 value);
     void set_mat4(const std::string& name, glm::mat4 mat4);
     
-    inline const std::string& get_name() { return _name; }
-    inline const std::string& get_vertex_path() { return _vertex_path; }
-    inline const std::string& get_fragment_path() { return _fragment_path; }
-    inline const std::filesystem::file_time_type& get_last_vertex_write() { return _last_vertex_write; }
-    inline const std::filesystem::file_time_type& get_last_fragment_write() { return _last_fragment_write; }
-    inline const unsigned int get_id() { return _id; }
+    inline const std::string& get_name() const { return _name; }
+    inline const std::string& get_vertex_path() const { return _vertex_path; }
+    inline const std::string& get_fragment_path() const { return _fragment_path; }
+    inline const std::filesystem::file_time_type& get_last_vertex_write() const { return _last_vertex_write; }
+    inline const std::filesystem::file_time_type& get_last_fragment_write() const { return _last_fragment_write; }
+    inline const unsigned int get_id() const { return _id; }
 
 private:
     unsigned int _id;

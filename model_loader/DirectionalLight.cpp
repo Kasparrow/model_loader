@@ -22,7 +22,7 @@ void DirectionalLight::set_name(unsigned int id)
     _name = "dir_lights[" + std::to_string(id) + "]";
 }
 
-void DirectionalLight::set_uniforms(ShaderProgram& shader)
+void DirectionalLight::set_uniforms(ShaderProgram& shader) const
 {
     Light::set_uniforms(shader);
     shader.set_vec3(_name + ".direction", _direction);

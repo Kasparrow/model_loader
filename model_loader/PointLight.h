@@ -18,11 +18,10 @@ public:
 
     void render_ui(unsigned int id);
 
-    virtual void set_uniforms(ShaderProgram& shader);
+    virtual void set_uniforms(ShaderProgram& shader) const;
     virtual void set_name(unsigned int id);
-    void render_dummy(ShaderProgram& shader, unsigned int vao);
 
-    inline glm::vec3& get_position() { return _position; }
+    inline const glm::vec3& get_position() const { return _position; }
 
 private:
     glm::vec3 _position;

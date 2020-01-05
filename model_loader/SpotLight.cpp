@@ -28,7 +28,7 @@ void SpotLight::set_name(unsigned int id)
     _name = "spot_lights[" + std::to_string(id) + "]";
 }
 
-void SpotLight::set_uniforms(ShaderProgram& shader)
+void SpotLight::set_uniforms(ShaderProgram& shader) const
 {
     Light::set_uniforms(shader);
     shader.set_float(_name + ".constant", _constant);

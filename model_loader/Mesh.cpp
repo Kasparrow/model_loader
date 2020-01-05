@@ -32,7 +32,7 @@ void Mesh::initialize()
     glBindVertexArray(0);
 }
 
-void Mesh::render(ShaderProgram& shader)
+void Mesh::render(ShaderProgram& shader) const
 {
     unsigned int diffuse_counter = 1;
     unsigned int specular_counter = 1;

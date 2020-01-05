@@ -10,15 +10,14 @@
 class DirectionalLight : public Light
 {
 public:
-    DirectionalLight(unsigned int id, glm::vec3 direction, glm::vec3 ambient,
-        glm::vec3 diffuse, glm::vec3 specular);
+    DirectionalLight(unsigned int id, glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 
     void draw_ui(unsigned int id);
 
-    virtual void set_uniforms(ShaderProgram& shader);
+    virtual void set_uniforms(ShaderProgram& shader) const;
     virtual void set_name(unsigned int id);
 
-    inline glm::vec3& get_direction() { return _direction; }
+    inline const glm::vec3& get_direction() const { return _direction; }
 
 private:
     glm::vec3 _direction;

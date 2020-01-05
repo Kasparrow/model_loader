@@ -1,7 +1,13 @@
 #include "LightManager.h"
 
+LightManager::LightManager() : _directional_count(0), _point_count(0), _spot_count(0), _directional_lights(),
+_point_lights(), _spot_lights() 
+{
+}
+
 void LightManager::render_ui()
 {
+    ImGui::Begin("Light Manager");
     ImGui::Text("Directional lights");
     ImGui::Separator();
     for (unsigned int i = 0; i < _directional_count; i++)
@@ -54,6 +60,8 @@ void LightManager::render_ui()
     ImGui::SameLine();
     if (ImGui::Button("Remove spot") && _spot_count > 0)
         remove_spot(_spot_count - 1);
+
+    ImGui::End();
 }
 
 void LightManager::add_directional(glm::vec3 direction, glm::vec3 ambient, 
@@ -125,24 +133,18 @@ void LightManager::remove_spot(unsigned int id)
         _point_lights[i].set_name(i);
 }
 
-void LightManager::set_uniforms(ShaderProgram& shader)
+void LightManager::set_uniforms(ShaderProgram& shader) const
 {
     shader.set_int("directional_count", _directional_count);
     shader.set_int("point_count", _point_count);
     shader.set_int("spot_count", _spot_count);
 
-    for (unsigned int i = 0; i < _directional_count; i++)
-        _directional_lights[i].set_uniforms(shader);
+    for (const auto& directional_light : _directional_lights)
+        directional_light.set_uniforms(shader);
     
-    for (unsigned int i = 0; i < _point_count; i++)
-        _point_lights[i].set_uniforms(shader);
+    for (const auto& point_light : _point_lights)
+        point_light.set_uniforms(shader);
 
-    for (unsigned int i = 0; i < _spot_count; i++)
-        _spot_lights[i].set_uniforms(shader);
-}
-
-void LightManager::render_dummies(ShaderProgram& shader, unsigned int vao)
-{
-    for (unsigned int i = 0; i < _point_count; i++)
-        _point_lights[i].render_dummy(shader, vao);
+    for (const auto& spot_light : _spot_lights)
+        spot_light.set_uniforms(shader);
 }

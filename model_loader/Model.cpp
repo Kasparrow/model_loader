@@ -1,17 +1,30 @@
 #include "Model.h"
 
-Model::Model(std::string path)
+Model::Model(const std::string& path)
 {
     load_model(path);
 }
 
-void Model::render(ShaderProgram& shader)
+void Model::render(ShaderProgram& shader) const
 {
-    for (unsigned int i = 0; i < _meshes.size(); i++)
-        _meshes[i].render(shader);
+    for (const auto& mesh : _meshes)
+        mesh.render(shader);
 }
 
-void Model::load_model(std::string path)
+glm::mat4 Model::get_transformation_matrix() const
+{
+    glm::mat4 transformation(1.0f);
+
+    transformation = glm::translate(transformation, _local_position);
+    transformation = glm::rotate(transformation, _local_rotation.x, glm::vec3(1.0, 0.0, 0.0));
+    transformation = glm::rotate(transformation, _local_rotation.y, glm::vec3(0.0, 1.0, 0.0));
+    transformation = glm::rotate(transformation, _local_rotation.z, glm::vec3(0.0, 0.0, 1.0));
+    transformation = glm::scale(transformation, _local_scale);
+
+    return transformation;
+}
+
+void Model::load_model(const std::string& path)
 {
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -105,11 +118,12 @@ std::vector<Texture> Model::load_material_textures(const aiScene* scene, aiMater
         material->GetTexture(type, i, &filename);
         bool skip = false;
 
-        for (unsigned int j = 0; j < _textures_loaded.size(); j++)
+        //for (unsigned int j = 0; j < _textures_loaded.size(); j++)
+        for (auto const& texture_loaded : _textures_loaded)
         {
-            if (std::strcmp(_textures_loaded[j]._path.data(), filename.C_Str()) == 0)
+            if (std::strcmp(texture_loaded._path.data(), filename.C_Str()) == 0)
             {
-                textures.push_back(_textures_loaded[j]);
+                textures.push_back(texture_loaded);
                 skip = true;
                 break;
             }
@@ -189,7 +203,7 @@ unsigned int Model::load_texture_from_data(const aiTexture* texture)
     return id;
 }
 
-unsigned int Model::load_texture(unsigned char* data, int width, int height, int nb_channels)
+unsigned int Model::load_texture(unsigned char* data, int width, int height, int nb_channels) const
 {
     unsigned int id;
     glGenTextures(1, &id);

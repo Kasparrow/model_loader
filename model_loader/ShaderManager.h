@@ -20,8 +20,9 @@ class ShaderManager
         void scan_shader_folder();
         void recompile_shaders();
         void add_shader(const ShaderProgram& shader);
-        ShaderProgram& get_current_shader();
-        void render();
+        void render_ui();
+
+        inline ShaderProgram& get_current_shader() { return _shaders[_current_index]; };
 
     private:
         std::vector<ShaderProgram> _shaders;

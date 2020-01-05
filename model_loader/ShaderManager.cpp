@@ -63,15 +63,10 @@ void ShaderManager::add_shader(const ShaderProgram& shader)
         _current_index = 0;
 }
 
-ShaderProgram& ShaderManager::get_current_shader()
+void ShaderManager::render_ui()
 {
-    assert(_current_index >= 0 && _current_index <= _shaders.size() - 1);
-    
-    return _shaders[_current_index];
-}
+    ImGui::Begin("Shader");
 
-void ShaderManager::render()
-{
     if (ImGui::BeginCombo("Current", _shaders[_current_index].get_name().c_str()))
     {
         for (unsigned int i = 0; i < _shaders.size(); i++)
@@ -143,4 +138,6 @@ void ShaderManager::render()
         _new_fragment = 0;
         _new_name = "Default";
     }
+
+    ImGui::End();
 }

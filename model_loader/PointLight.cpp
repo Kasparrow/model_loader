@@ -26,7 +26,7 @@ void PointLight::set_name(unsigned int id)
     _name = "point_lights[" + std::to_string(id) + "]" ;
 }
 
-void PointLight::set_uniforms(ShaderProgram& shader)
+void PointLight::set_uniforms(ShaderProgram& shader) const
 {
     Light::set_uniforms(shader);
 
@@ -34,15 +34,4 @@ void PointLight::set_uniforms(ShaderProgram& shader)
     shader.set_float(_name + ".constant", _constant);
     shader.set_float(_name + ".linear", _linear);
     shader.set_float(_name + ".quadratic", _quadratic);
-}
-
-void PointLight::render_dummy(ShaderProgram& shader, unsigned int vao)
-{
-    glm::mat4 light_model = glm::mat4(1.0f);
-    light_model = glm::translate(light_model, _position);
-    light_model = glm::scale(light_model, glm::vec3(0.2f));
-    shader.set_mat4("model", light_model);
-
-    glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
 }
