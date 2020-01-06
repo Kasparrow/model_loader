@@ -1,12 +1,14 @@
 #include "Model.h"
 
-Model::Model(const std::string& path)
+Model::Model(const std::string& path) : _path(path), _is_loaded(false)
 {
-    load_model(path);
 }
 
-void Model::render(ShaderProgram& shader) const
+void Model::render(ShaderProgram& shader)
 {
+    if (!_is_loaded)
+        load_model(_path);
+
     for (const auto& mesh : _meshes)
         mesh.render(shader);
 }
@@ -16,10 +18,10 @@ glm::mat4 Model::get_transformation_matrix() const
     glm::mat4 transformation(1.0f);
 
     transformation = glm::translate(transformation, _local_position);
-    transformation = glm::rotate(transformation, _local_rotation.x, glm::vec3(1.0, 0.0, 0.0));
-    transformation = glm::rotate(transformation, _local_rotation.y, glm::vec3(0.0, 1.0, 0.0));
-    transformation = glm::rotate(transformation, _local_rotation.z, glm::vec3(0.0, 0.0, 1.0));
-    transformation = glm::scale(transformation, _local_scale);
+    transformation = glm::rotate(transformation, glm::radians(_local_rotation.x), glm::vec3(1.0, 0.0, 0.0));
+    transformation = glm::rotate(transformation, glm::radians(_local_rotation.y), glm::vec3(0.0, 1.0, 0.0));
+    transformation = glm::rotate(transformation, glm::radians(_local_rotation.z), glm::vec3(0.0, 0.0, 1.0));
+    transformation = glm::scale(transformation, glm::vec3(_local_scale));
 
     return transformation;
 }
@@ -37,16 +39,16 @@ void Model::load_model(const std::string& path)
 
     _directory = path.substr(0, path.find_last_of('\\'));
 
-    // extract local transformations
-
     aiVector3D scaling, position;
     aiQuaternion rotation;
     scene->mRootNode->mTransformation.Decompose(scaling, rotation, position);
-    _local_scale = glm::vec3(scaling.x, scaling.y, scaling.z);
+    _local_scale = 1.0f;
     _local_rotation = glm::vec4(rotation.x, rotation.y, rotation.z, rotation.w);
     _local_position = glm::vec3(position.x, position.y, position.z);
 
     process_node(scene->mRootNode, scene);
+
+    _is_loaded = true;
 }
 
 void Model::process_node(aiNode* node, const aiScene* scene)
@@ -118,7 +120,6 @@ std::vector<Texture> Model::load_material_textures(const aiScene* scene, aiMater
         material->GetTexture(type, i, &filename);
         bool skip = false;
 
-        //for (unsigned int j = 0; j < _textures_loaded.size(); j++)
         for (auto const& texture_loaded : _textures_loaded)
         {
             if (std::strcmp(texture_loaded._path.data(), filename.C_Str()) == 0)
@@ -226,4 +227,11 @@ unsigned int Model::load_texture(unsigned char* data, int width, int height, int
     }
 
     return id;
+}
+
+void Model::render_ui()
+{
+    ImGui::InputFloat3("Translation", &_local_position[0]);
+    ImGui::InputFloat3("Rotation", &_local_rotation[0]);
+    ImGui::InputFloat("Scale", &_local_scale);
 }

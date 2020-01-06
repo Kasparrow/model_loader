@@ -7,17 +7,12 @@
 #include "ShaderProgram.h"
 #include "Utils.h"
 
-#define SHADER_FOLDER std::string("..\\resources\\shaders\\")
-#define DEFAULT_NAME "Default"
-#define DEFAULT_VERTEX SHADER_FOLDER + "default.vert"
-#define DEFAULT_FRAGMENT SHADER_FOLDER + "default.frag"
-
 class ShaderManager
 {
     public:
         ShaderManager();
         void initialize();
-        void scan_shader_folder();
+        void scan_folders();
         void recompile_shaders();
         void add_shader(const ShaderProgram& shader);
         void render_ui();

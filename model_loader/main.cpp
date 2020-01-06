@@ -6,7 +6,7 @@
 #include "Window.h"
 #include "ShaderManager.h"
 #include "LightManager.h"
-#include "Model.h"
+#include "ModelManager.h"
 
 void initialize()
 {
@@ -29,9 +29,9 @@ int main(int argc, char** argv)
     LightManager light_manager;
     light_manager.add_directional(glm::vec3(0.0f, -1.0f, 0.0f));
 
-    Model model("..\\resources\\wow_models\\kasparrow\\kasparrow.obj");
-    //Model model("..\\resources\\wow_models\\alexstrasza\\alexstrasza.fbx");
-    //Model model("..\\resources\\models\\nanosuit\\nanosuit.obj");
+    ModelManager model_manager;
+    model_manager.initialize();
+
 
     while (window.is_open())
     {
@@ -45,17 +45,18 @@ int main(int argc, char** argv)
 
         ShaderProgram& shader = shader_manager.get_current_shader();
         shader.use();
-        shader.set_mat4("model", model.get_transformation_matrix());
+        shader.set_mat4("model", model_manager.get_current_model().get_transformation_matrix());
         shader.set_mat4("projection", glm::perspective(glm::radians(45.0f), window.get_ratio(), 0.1f, 100.0f));
         shader.set_mat4("view", window.get_camera().get_view_matrix());
         shader.set_vec3("view_position", window.get_camera().get_position());
         light_manager.set_uniforms(shader);
 
-        model.render(shader);
+        model_manager.render(shader);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         window.render_ui();
+        model_manager.render_ui();
         shader_manager.render_ui();
         light_manager.render_ui();
         ImGui::Render();

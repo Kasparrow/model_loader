@@ -114,6 +114,9 @@
     <ClInclude Include="Utils.h">
       <Filter>headers\utils</Filter>
     </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>headers\render\model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectionalLight.cpp">
@@ -175,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>sources\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>sources\render\model</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
