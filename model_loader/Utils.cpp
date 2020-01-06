@@ -26,6 +26,9 @@ namespace fs_utils
 {
     void scan_folder(const std::string& folder, const std::vector<std::string>& extensions, bool recursive, std::function<void(const std::string& filename)> callback)
     {
+        if (!std::filesystem::exists(folder))
+            return;
+
         for (const auto& entry : std::filesystem::directory_iterator(folder))
         {
             std::string path = entry.path().string();

@@ -18,11 +18,13 @@ The goal of this project is to provide a small environnement which allows me to 
 * Limited to 20 lights by type
 * Do not remove default.vert and default.frag from the resources/shaders folder
 * Textures must be in the same folder as their model
+* Lighting shader does not work properly when transformations are applied to the models
 
 ## requirements
 
 * C++ 17 compiler
 * DirectX SDK (used by Assimp, can be downloaded [here](http://www.microsoft.com/en-us/download/details.aspx?id=6812))
+* Copy 3rd_parties/dll/assimp-vc140-mt.dll in executable directory
 
 ## screenshots
 
@@ -37,6 +39,7 @@ I take the following screenshots with World of Warcraft models extracted with Wo
 
 ## updates
 
+* 06/01/2020 : add ModelManager class
 * 04/01/2020 : handle embedded texture in .fbx file
 * 03/01/2020 : add ShaderManager class
 * 17/12/2019 : initial commit
