@@ -11,6 +11,9 @@
 
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
+#include <imgui/imgui_stdlib.h>
+
+#include "Logger.h"
 
 namespace str_utils
 {

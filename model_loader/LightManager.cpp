@@ -69,7 +69,7 @@ void LightManager::add_directional(glm::vec3 direction, glm::vec3 ambient,
 {
     if (_directional_count == MAX_LIGHT)
     {
-        std::cout << "You reach the directional light count limit.\n";
+        Logger::add_entry(LogType::ERROR, "directional lights limit reach");
         return;
     }
 
@@ -82,7 +82,7 @@ void LightManager::add_point(glm::vec3 position, glm::vec3 ambient, glm::vec3 di
 {
     if (_point_count == MAX_LIGHT)
     {
-        std::cout << "You reach the point light count limit.\n";
+        Logger::add_entry(LogType::ERROR, "point lights limit reach");
         return;
     }
 
@@ -97,7 +97,7 @@ void LightManager::add_spot(glm::vec3 position, glm::vec3 direction, float cut_o
 {
     if (_spot_count == MAX_LIGHT)
     {
-        std::cout << "You reach the spot light count limit.\n";
+        Logger::add_entry(LogType::ERROR, "spot lights limit reach");
         return;
     }
 

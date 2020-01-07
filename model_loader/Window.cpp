@@ -3,8 +3,8 @@
 Window::Window(std::string name, int width, int height)
     : _name{ name }, _width{ width }, _height{ height }, _delta{ 0 }, _last_frame{ 0 },
     _camera{ glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f) },
-    _cursor_info{ width / 2.0f, height / 2.0f, true, false, true }, _gl_parameters{ false, true, true },
-    _window{ nullptr }
+    _cursor_info{ width / 2.0f, height / 2.0f, true, false, true }, _input_info { false },
+    _gl_parameters{ false, true, true }, _window{ nullptr }
 {
 }
 
@@ -86,19 +86,22 @@ void Window::process_inputs()
     
     _cursor_info._was_locked = _cursor_info._is_locked;
        
-    if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-        _camera.process_keyboard(FORWARD, delta);
+    if (!_input_info._lock_movement)
+    {
+        if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
+            _camera.process_keyboard(FORWARD, delta);
 
-    if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-        _camera.process_keyboard(BACKWARD, delta);
+        if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
+            _camera.process_keyboard(BACKWARD, delta);
 
-    if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
-        _camera.process_keyboard(LEFT, delta);
+        if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
+            _camera.process_keyboard(LEFT, delta);
 
-    if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
-        _camera.process_keyboard(RIGHT, delta);
+        if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
+            _camera.process_keyboard(RIGHT, delta);
+    }
 
-    if (glfwGetKey(_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    if (glfwGetKey(_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || _input_info._lock_movement)
     {
         glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         _cursor_info._is_locked = false;

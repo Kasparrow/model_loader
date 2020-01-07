@@ -155,6 +155,7 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightManager.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelManager.h" />
@@ -172,11 +173,13 @@
     <ClCompile Include="..\3rd_parties\src\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\3rd_parties\src\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\3rd_parties\src\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\3rd_parties\src\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="..\3rd_parties\src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightManager.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />

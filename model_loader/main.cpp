@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 {
     initialize();
     
-    Window window("Model loader", 1200, 800);
+    Window window("Model loader", 1600, 1200);
     window.initialize();
     
     ShaderManager shader_manager;
@@ -59,9 +59,11 @@ int main(int argc, char** argv)
         model_manager.render_ui();
         shader_manager.render_ui();
         light_manager.render_ui();
+        Logger::render_ui();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+        window.lock_movement(ImGui::GetIO().WantCaptureKeyboard);
         window.swap_buffers();
         glfwPollEvents();
     }

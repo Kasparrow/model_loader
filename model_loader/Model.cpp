@@ -28,12 +28,32 @@ glm::mat4 Model::get_transformation_matrix() const
 
 void Model::load_model(const std::string& path)
 {
+    Logger::add_entry(LogType::INFO, "start loading " + fs_utils::get_filename(path));
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    if (std::string("").compare(import.GetErrorString()) != 0)
     {
-        std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << "\n";
+        Logger::add_entry(LogType::ERROR, import.GetErrorString());
+        return;
+    }
+
+    if (!scene)
+     
+    {
+        Logger::add_entry(LogType::ERROR, "no scene found");
+        return;
+    }
+    
+    if (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
+    {
+        Logger::add_entry(LogType::ERROR, "incomplete scene");
+        return;
+    }
+
+    if (!scene->mRootNode)
+    {
+        Logger::add_entry(LogType::ERROR, " scene contains no root node");
         return;
     }
 
@@ -49,6 +69,7 @@ void Model::load_model(const std::string& path)
     process_node(scene->mRootNode, scene);
 
     _is_loaded = true;
+    Logger::add_entry(LogType::INFO, fs_utils::get_filename(path) + " succesfully loaded");
 }
 
 void Model::process_node(aiNode* node, const aiScene* scene)
@@ -169,7 +190,7 @@ unsigned int Model::load_texture_from_file(std::string filename, std::string dir
         id = load_texture(data, width, height, nb_channels);
 
     else
-        std::cout << "Failed to load texture : " << directory << "\\" << filename << ".\n";
+        Logger::add_entry(LogType::WARNING, " failed to load texture " + directory + "\\" + filename);
 
     stbi_image_free(data);
 
@@ -192,7 +213,7 @@ unsigned int Model::load_texture_from_data(const aiTexture* texture)
         id = load_texture(data, width, height, nb_channels);
 
     else
-        std::cout << "Failed to load embedded texture\n";
+        Logger::add_entry(LogType::WARNING, "failed to load embedded texture");
 
     // extract embedded texture : sometimes WMV exported fbx contains embedded textures
     // references and path to textures, but never provide these files.

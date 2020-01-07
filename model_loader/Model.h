@@ -8,6 +8,7 @@
 #include "stb_image/stb_image_write.h"
 
 #include "Mesh.h"
+#include "Utils.h"
 
 class Model
 {

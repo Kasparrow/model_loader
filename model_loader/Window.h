@@ -24,6 +24,10 @@ struct CursorInfo
     bool _is_locked;
 };
 
+struct InputInfo {
+    bool _lock_movement;
+};
+
 struct GLParameters
 {
     bool _is_wire_mode;
@@ -44,6 +48,7 @@ public:
 
     void apply_gl_parameters() const;
     
+    inline void lock_movement(bool lock) { _input_info._lock_movement = lock; }
     inline void swap_buffers() const { glfwSwapBuffers(_window); }
     inline void close() const { glfwSetWindowShouldClose(_window, true); }
     inline bool is_open() const { return !glfwWindowShouldClose(_window); }
@@ -64,6 +69,7 @@ private:
     float _delta;
 
     CursorInfo _cursor_info;
+    InputInfo _input_info;
     GLParameters _gl_parameters;
 
     bool initialize_glfw();

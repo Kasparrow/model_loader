@@ -8,6 +8,8 @@ ShaderProgram::ShaderProgram(std::string name, std::string vertex_path, std::str
 
 void ShaderProgram::compile()
 {
+    Logger::add_entry(LogType::INFO, "start " + _name + " compilation");
+
     std::string str_vertex_src;
     std::string str_fragment_src;
     std::ifstream vertex_file;
@@ -34,7 +36,7 @@ void ShaderProgram::compile()
     }
     catch (std::ifstream::failure e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n";
+        Logger::add_entry(LogType::ERROR, "failed to read " + _name + " sources files");
     }
 
     // - compile shaders
@@ -54,7 +56,7 @@ void ShaderProgram::compile()
     if (!success)
     {
         glGetShaderInfoLog(vertex, 512, nullptr, log);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION::FAILED\n" << log << "\n";
+        Logger::add_entry(LogType::ERROR, "vertex compilation failed " + std::string(log));
     }
 
     // - vertex
@@ -66,11 +68,10 @@ void ShaderProgram::compile()
     if (!success)
     {
         glGetShaderInfoLog(fragment, 512, nullptr, log);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION::FAILED\n" << log << "\n";
+        std::cout << "fragment compilation failed " + std::string(log);
     }
 
     // - linking
-
     // - delete old version
 
     if (_id != 0)
@@ -85,11 +86,13 @@ void ShaderProgram::compile()
     if (!success)
     {
         glGetProgramInfoLog(_id, 512, nullptr, log);
-        std::cout << "ERROR::SHADER_PROGRAM::LINKING::FAILED\n" << log << "\n";
+        std::cout << "linking failed " + std::string(log);
     }
 
     _last_vertex_write = std::filesystem::last_write_time(_vertex_path);
     _last_fragment_write = std::filesystem::last_write_time(_fragment_path);
+
+    Logger::add_entry(LogType::INFO, _name + " successfully compiled");
 
     // - delete shaders
     glDeleteShader(vertex);

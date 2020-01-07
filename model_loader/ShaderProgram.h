@@ -14,6 +14,8 @@
 
 #include <imgui/imgui.h>
 
+#include "Logger.h"
+
 class ShaderProgram
 {
 public:

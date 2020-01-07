@@ -19,13 +19,23 @@ void ShaderManager::scan_folders()
 
     for (const auto& path : fs_utils::shader_directories)
     {
-        fs_utils::scan_folder(path, fs_utils::vertex_extensions, true, [this](const std::string& path) {
+        Logger::add_entry(LogType::INFO, "scanning " + path);
+        int vertex_found = 0;
+
+        fs_utils::scan_folder(path, fs_utils::vertex_extensions, true, [this, &vertex_found](const std::string& path) {
             _vertex_paths.push_back(path);
+            vertex_found++;
         });
 
-        fs_utils::scan_folder(path, fs_utils::fragment_extensions, true, [this](const std::string& path) {
+        Logger::add_entry(LogType::INFO, "found " + std::to_string(vertex_found) + " vertex sources");
+
+        int fragment_found = 0;
+        fs_utils::scan_folder(path, fs_utils::fragment_extensions, true, [this, &fragment_found](const std::string& path) {
             _fragment_paths.push_back(path);
+            fragment_found++;
         });
+
+        Logger::add_entry(LogType::INFO, "found " + std::to_string(fragment_found) + " fragment sources");
     }
 }
 
@@ -35,13 +45,13 @@ void ShaderManager::recompile_shaders()
     {
         if (!std::filesystem::exists(shader.get_vertex_path()))
         {
-            std::cout << "ERROR: Can't recompile " << shader.get_name() << " : " << shader.get_vertex_path() << " no longer exists.\n";
+            Logger::add_entry(LogType::ERROR, " can't recompile " + shader.get_name() + " : " + shader.get_vertex_path() + " no longer exists");
             continue;
         }
 
         if (!std::filesystem::exists(shader.get_fragment_path()))
         {
-            std::cout << "ERROR: Can't recompile " << shader.get_name() << " : " << shader.get_fragment_path() << " no longer exists.\n";
+            Logger::add_entry(LogType::ERROR, " can't recompile " + shader.get_name() + " : " + shader.get_fragment_path() + " no longer exists");
             continue;
         }
 
@@ -73,7 +83,7 @@ void ShaderManager::render_ui()
         recompile_shaders();
 
     ImGui::Separator();
-    ImGui::InputText("Name", _new_name.data(), 20);
+    ImGui::InputText("Name", &_new_name);
     
     ui_utils::combo_from_vector("Vertex", _vertex_paths, _new_vertex, [](const auto& path) {
         return fs_utils::get_filename(path);

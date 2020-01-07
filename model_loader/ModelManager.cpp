@@ -19,9 +19,14 @@ void ModelManager::scan_folders()
 
     for (const auto& path : fs_utils::model_directories)
     {
-        fs_utils::scan_folder(path, fs_utils::model_extensions, true, [this](const std::string& path) {
+        Logger::add_entry(LogType::INFO, "scan " + path);
+        int found = 0;
+        fs_utils::scan_folder(path, fs_utils::model_extensions, true, [this, &found](const std::string& path) {
             _models.push_back(Model(path));
+            found++;
         });
+        Logger::add_entry(LogType::INFO, std::to_string(found) + " models found");
+
     }
 }
 
