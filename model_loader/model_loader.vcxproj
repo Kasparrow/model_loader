@@ -71,9 +71,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Kasparrow\source\repos\model_loader\3rd_parties\include\imgui;C:\Users\Kasparrow\source\repos\model_loader\3rd_parties\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Kasparrow\source\repos\model_loader\3rd_parties\lib;$(LibraryPath)</LibraryPath>
-    <SourcePath>C:\Users\Kasparrow\source\repos\model_loader\3rd_parties\src\glad;C:\Users\Kasparrow\source\repos\model_loader\3rd_parties\src\imgui;C:\Users\Kasparrow\source\repos\model_loader\3rd_parties\src;$(SourcePath)</SourcePath>
+    <IncludePath>$(SolutionDir)3rd_parties\include\imgui;$(SolutionDir)3rd_parties\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)3rd_parties\lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SolutionDir)3rd_parties\src\glad;$(SolutionDir)3rd_parties\src\imgui;$(SolutionDir)3rd_parties\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
