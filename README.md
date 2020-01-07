@@ -28,7 +28,7 @@ The goal of this project is to provide a small environnement which allows me to 
 
 ## screenshots
 
-I take the following screenshots with World of Warcraft models extracted with WoW Model Viewer. These models are not included in the repository (I'm not an expert in copyrights, but i'm pretty sure that i don't own any rights on them), but you can test the program with the nanosuit model provided.
+I take the following screenshots with World of Warcraft models extracted with WoW Model Viewer. These models are not included in the repository (I'm not an expert in copyrights, but i'm pretty sure that i don't own any rights on them), but you can test the program with the nanosuit model provided, or add your own 3D models in the resources/models folder.
 
 ###### .obj with default shader
 ![obj default shader screenshot](./resources/screenshots/default.png)
@@ -36,9 +36,12 @@ I take the following screenshots with World of Warcraft models extracted with Wo
 ![obj lighting shader screenshot](./resources/screenshots/lighting.png)
 ###### .fbx with default alpha shader
 ![fbx default alpha shader screenshot](./resources/screenshots/alexstrasza_fbx.png)
+###### model manager demo
+![model manager demo gif](./resources/screenshots/model_manager.gif)
 
 ## updates
 
+* 07/01/2020 : add Logger class
 * 06/01/2020 : add ModelManager class
 * 04/01/2020 : handle embedded texture in .fbx file
 * 03/01/2020 : add ShaderManager class
