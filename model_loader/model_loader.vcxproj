@@ -97,6 +97,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /y "$(OutDir)..\3rd_parties\dll\assimp-vc140-mt.dll" "$(OutDir)assimp-vc140-mt.dll"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy Assimp dll in executable directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
