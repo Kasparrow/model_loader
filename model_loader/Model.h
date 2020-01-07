@@ -32,6 +32,8 @@ private:
     glm::vec4 _local_rotation;
     glm::vec3 _local_position;
     bool _is_loaded;
+    bool _loading_failed;
+    std::filesystem::file_time_type _last_write;
 
     void load_model(const std::string& path);
     void process_node(aiNode* node, const aiScene* scene);

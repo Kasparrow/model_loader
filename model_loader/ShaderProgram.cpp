@@ -37,6 +37,7 @@ void ShaderProgram::compile()
     catch (std::ifstream::failure e)
     {
         Logger::add_entry(LogType::ERROR, "failed to read " + _name + " sources files");
+        return;
     }
 
     // - compile shaders
@@ -56,7 +57,9 @@ void ShaderProgram::compile()
     if (!success)
     {
         glGetShaderInfoLog(vertex, 512, nullptr, log);
+        glDeleteShader(vertex);
         Logger::add_entry(LogType::ERROR, "vertex compilation failed " + std::string(log));
+        return;
     }
 
     // - vertex
@@ -68,7 +71,9 @@ void ShaderProgram::compile()
     if (!success)
     {
         glGetShaderInfoLog(fragment, 512, nullptr, log);
-        std::cout << "fragment compilation failed " + std::string(log);
+        glDeleteShader(fragment);
+        Logger::add_entry(LogType::ERROR, "fragment compilation failed " + std::string(log));
+        return;
     }
 
     // - linking
@@ -77,21 +82,32 @@ void ShaderProgram::compile()
     if (_id != 0)
         glDeleteProgram(_id);
 
-    _id =  glCreateProgram();
-    glAttachShader(_id, vertex);
-    glAttachShader(_id, fragment);
-    glLinkProgram(_id);
-    glGetProgramiv(_id, GL_LINK_STATUS, &success);
+    unsigned int tmp_id = glCreateProgram();
+    glAttachShader(tmp_id, vertex);
+    glAttachShader(tmp_id, fragment);
+    glLinkProgram(tmp_id);
+    glGetProgramiv(tmp_id, GL_LINK_STATUS, &success);
 
     if (!success)
     {
-        glGetProgramInfoLog(_id, 512, nullptr, log);
-        std::cout << "linking failed " + std::string(log);
+        glGetProgramInfoLog(tmp_id, 512, nullptr, log);
+        Logger::add_entry(LogType::ERROR, "linking failed " + std::string(log));
+        
+        glDeleteProgram(tmp_id);
+        glDeleteShader(vertex);
+        glDeleteShader(vertex);
+        return;
     }
 
     _last_vertex_write = std::filesystem::last_write_time(_vertex_path);
     _last_fragment_write = std::filesystem::last_write_time(_fragment_path);
 
+    // - delete old program
+    if (_id != 0)
+        glDeleteShader(_id);
+
+    _id = tmp_id;
+    
     Logger::add_entry(LogType::INFO, _name + " successfully compiled");
 
     // - delete shaders

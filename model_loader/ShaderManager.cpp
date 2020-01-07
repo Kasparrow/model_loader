@@ -1,6 +1,6 @@
 #include "ShaderManager.h"
 
-ShaderManager::ShaderManager() : _current_index(0), _new_vertex(0), _new_fragment(0), _new_name("Default")
+ShaderManager::ShaderManager() : _current_index(0), _new_vertex(0), _new_fragment(0), _new_name("")
 {
 
 }
@@ -41,6 +41,8 @@ void ShaderManager::scan_folders()
 
 void ShaderManager::recompile_shaders()
 {
+    int recompiled_counter = 0;
+
     for (auto& shader : _shaders)
     {
         if (!std::filesystem::exists(shader.get_vertex_path()))
@@ -59,8 +61,15 @@ void ShaderManager::recompile_shaders()
         auto last_fragment_write = std::filesystem::last_write_time(shader.get_fragment_path());
 
         if (last_vertex_write > shader.get_last_vertex_write() || last_fragment_write > shader.get_last_fragment_write())
+        {
             shader.compile();
+            recompiled_counter++;
+        }
     }
+
+    if (recompiled_counter == 0)
+        Logger::add_entry(LogType::INFO, "all shaders are up to date");
+
 }
 
 void ShaderManager::add_shader(const ShaderProgram& shader)
@@ -102,12 +111,25 @@ void ShaderManager::render_ui()
         return s.get_name().compare(_new_name) == 0;
     });
 
-    if (ImGui::Button("Compile shader") && _new_name.size() > 0 && it_name == _shaders.end())
+    if (ImGui::Button("Compile shader"))
     {
-        add_shader(ShaderProgram(_new_name, _vertex_paths[_new_vertex], _fragment_paths[_new_fragment]));
-        _new_vertex = 0;
-        _new_fragment = 0;
-        _new_name = "Default";
+        if (_new_name.size() == 0)
+        {
+            Logger::add_entry(LogType::ERROR, "shader must be named");
+        }
+        
+        else if (it_name != _shaders.end())
+        {
+            Logger::add_entry(LogType::ERROR, "shader name must unique");
+        }
+
+        else
+        {
+            add_shader(ShaderProgram(_new_name, _vertex_paths[_new_vertex], _fragment_paths[_new_fragment]));
+            _new_vertex = 0;
+            _new_fragment = 0;
+            _new_name = "";
+        }
     }
 
     ImGui::End();

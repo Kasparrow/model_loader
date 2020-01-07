@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model(const std::string& path) : _path(path), _is_loaded(false)
+Model::Model(const std::string& path) : _path(path), _is_loaded(false), _loading_failed (false)
 {
 }
 
@@ -28,9 +28,18 @@ glm::mat4 Model::get_transformation_matrix() const
 
 void Model::load_model(const std::string& path)
 {
+    if (_loading_failed && _last_write >= std::filesystem::last_write_time(path))
+    {
+        // - last loading failed and file was not updated since, don't try to load it again
+        return;
+    }
+
     Logger::add_entry(LogType::INFO, "start loading " + fs_utils::get_filename(path));
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+    _last_write = std::filesystem::last_write_time(path);
+    _loading_failed = true;
 
     if (std::string("").compare(import.GetErrorString()) != 0)
     {
@@ -39,7 +48,6 @@ void Model::load_model(const std::string& path)
     }
 
     if (!scene)
-     
     {
         Logger::add_entry(LogType::ERROR, "no scene found");
         return;
@@ -69,6 +77,8 @@ void Model::load_model(const std::string& path)
     process_node(scene->mRootNode, scene);
 
     _is_loaded = true;
+    _loading_failed = false;
+
     Logger::add_entry(LogType::INFO, fs_utils::get_filename(path) + " succesfully loaded");
 }
 
